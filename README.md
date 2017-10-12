@@ -1,1 +1,62 @@
-# CancerGenomicsCloud_tutorial
+# CancerGenomicsCloud
+
+## Sevenbridges cancer genomics cloud tutorial
+
+### 1. R api to analyse TCGA data on the Cancer Genomics Cloud
+
+### 1.1 Introduction
+
+Sevenbridges maintained a GitHub repository for API client, CWL schema, meta schema and SDK helper in R, [here](https://github.com/sbg/sevenbridges-r).  
+
+[Tutorials](https://github.com/sbg/sevenbridges-r#tutorials) from Tengfei Yin for multiple tasks can be found on the GitHub, including intersting ones for TCGA data analysis:
+
+  - [Use R on the CancerGenomicsCloud](http://www.tengfei.name/sevenbridges/vignettes/bioc-workflow.html)
+  - [Describe and execute Common Workflow Language (CWL) Tools and Workflows in R](http://www.tengfei.name/sevenbridges/vignettes/apps.html)
+  - [Browse data on the Cancer Genomics Cloud via the Data Explorer, a SPARQL query,
+or the Datasets API](http://www.tengfei.name/sevenbridges/vignettes/cgc-sparql.html)  
+
+A good schema for using R api to analyse TCGA data is the following:  
+
+  1. Create your `docker` image or use an existing one.
+  2. Choose the `machine` you want (default is _m4.2xlarge (8 CPUs, 32Gb_, _40cts/h_) You pay at least 1 hour.
+  3. Create a `tool` or a `workflow` (directly in R or import CWL file, which can be written also on JSON or YAML)
+  4. Add specific data to your project (use the `queries` to keep reproducibility)  
+  5. `Run` your analysis with a loop on your files
+
+### 1.2 Examples of tools
+
+#### Platypus / bgzip Workflow
+
+ - [R API code and running example](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/platypus_bgzip_workflow.r)
+ - [JSON file to describe platypus tool](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/platypus.json)
+
+### 1.3 Data queries
+
+ * [Filter and count TCGA entities with dataset API](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/READMEs/dataset_API.md)  
+ * [GUI Data Browser tutorial](https://www.youtube.com/watch?v=MOOQ1BFA_JU&index=1&list=PLWTWIYwwk-kfiPNnOn5QPyJNs4LT0OIXN). __CAUTION:__ filters after "file" entity are not considered if you want to add the querying files to your project.
+
+### 1.4 Example of TCGA analysis: germline calling on lung samples
+
+Steps are the following:
+  * use GUI to add lung BAM files to your project
+  * use [this](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/TCGA_germline_platypus.r) R script to:
+    * 1. load platypus and bgzip JSON tools
+    * 2. connect them into a workflow
+    * 3. add the workflow to your project (these 2 previous steps can be skipped if your app is already present in the project)
+    * 4. loop over the BAM file to run the variant calling on each sample
+
+### 1.5 Issues (API is currently in development)
+
+- [query is limited to the 100 first files](https://github.com/sbg/sevenbridges-r/issues/60)
+- If upload a JSON file in the GUI, can not run a task using this app in R
+
+### 2. Amazon Web Services (AWS) utils
+
+### 2.1 Spot Instances
+The CGC uses two types of Amazon EC2 pricing for instances: On-Demand and Spot. On-Demand instances are purchased at a fixed rate, while the price of Spot Instances varies according to supply and demand.
+
+ * CGC strategy is to __bid the On-Demand__ instance price for spot instances
+ * AWS EC2 will __terminate__ your spot instance if __bid price < market price__
+ * in this case, task will continue on an __On-Demand__ instance  
+ * if spot instance is terminated before 1h of running, __not charged__  
+ * spot instance are not recommended for __critical-time__ jobs

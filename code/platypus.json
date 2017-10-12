@@ -1,0 +1,118 @@
+{
+  "sbg:contributors": [
+    "Tiffany Delhomme"
+  ],
+  "sbg:createdBy": "Tiffany Delhomme",
+  "description": "platypus variant calling for whole-exome sequencing data",
+  "id": "platypus",
+  "class": "CommandLineTool",
+  "hints": [
+    {
+      "class": "DockerRequirement",
+      "dockerPull": "iarcbioinfo/platypus-nf"
+    },
+    {
+      "class": "sbg:MemRequirement",
+      "value": 30000
+    },
+    {
+      "class": "sbg:AWSInstanceType",
+      "value": "c4.4xlarge"
+    },
+    {
+      "class": "sbg:CPURequirement",
+      "value": 16
+    }
+  ],
+  "requirements": [
+    {
+      "id": "#cwl-js-engine",
+      "requirements": [
+        {
+          "class": "DockerRequirement",
+          "dockerPull": "rabix/js-engine"
+        }
+      ],
+      "class": "ExpressionEngineRequirement"
+    }
+  ],
+  "baseCommand": "/Platypus/bin/Platypus.py callVariants --badReadsThreshold=0 --qdThreshold=0 --rmsmqThreshold=20 --hapScoreThreshold=10 --scThreshold=0.99 --nCPU=16",
+  "arguments": [],
+  "label": "CWL platypus for exome data",
+  "inputs":[
+    {
+      "sbg:category": "Basic",
+      "type": [
+        "File"
+      ],
+      "description": "BAM file to be called with platypus.",
+      "label": "input BAM file",
+      "id": "#bamfile",
+      "sbg:fileTypes": "BAM",
+      "required" : true,
+      "inputBinding": {
+        "separate": false,
+        "sbg:cmdInclude": true,
+        "position": 0,
+        "prefix" : "--bamFiles=",
+        "secondaryFiles" : "^.bai"
+      }
+    },
+    {
+      "sbg:category": "Basic",
+      "type": [
+        "File"
+      ],
+      "description": "Genome reference in FASTA format",
+      "label": "reference FASTA file",
+      "id": "#ref",
+      "sbg:fileTypes": "FASTA",
+      "required" : true,
+      "inputBinding": {
+        "separate": false,
+        "sbg:cmdInclude": true,
+        "position": 1,
+        "prefix" : "--refFile=",
+        "secondaryFiles" : ".fai"
+      }
+    },
+    {
+      "sbg:category": "Basic",
+      "type": [
+        "string"
+      ],
+      "description": "Name of the variant calling output file.",
+      "label": "output VCF file name",
+      "id": "#output_vcf_name",
+      "required" : false,
+      "inputBinding": {
+        "separate": false,
+        "sbg:cmdInclude": true,
+        "position": 2,
+        "prefix" : "--output=",
+        "valueFrom" : {
+          "class": "Expression",
+          "script": "x=$job.inputs.bamfile.name; x.split('.bam')[0] + '_platypus.vcf' ",
+          "engine": "#cwl-js-engine"
+        }
+      }
+    }
+  ],
+  "outputs":[
+    {
+      "id": "#output_vcf",
+      "type": [
+        "File"
+      ],
+      "description" : "Output variant calling file from platypus.",
+      "sbg:fileTypes": "vcf",
+      "outputBinding": {
+        "glob": {
+          "class": "Expression",
+          "script": "x = $job.inputs.bamfile.name; x.split('.bam')[0] + '_platypus.vcf'",
+          "engine": "#cwl-js-engine"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "sbg:contributors": [
+    "Tiffany Delhomme"
+  ],
+  "sbg:createdBy": "Tiffany Delhomme",
+  "description": "VCF normalization with vt and compression with bgzip",
+  "id": "vt_bgzip",
+  "class": "CommandLineTool",
+  "hints": [
+    {
+      "class": "DockerRequirement",
+      "dockerPull": "iarcbioinfo/platypus-nf"
+    },
+    {
+      "class": "sbg:MemRequirement",
+      "value": 3750
+    },
+    {
+      "class": "sbg:AWSInstanceType",
+      "value": "c4.large"
+    },
+    {
+      "class": "sbg:CPURequirement",
+      "value": 1
+    }
+  ],
+  "requirements": [
+    {
+      "id": "#cwl-js-engine",
+      "requirements": [
+        {
+          "class": "DockerRequirement",
+          "dockerPull": "rabix/js-engine"
+        }
+      ],
+      "class": "ExpressionEngineRequirement"
+    }
+  ],
+  "baseCommand": [
+    "/vt/vt decompose -s"
+  ],
+  "arguments": [],
+  "label": "CWL vt and bgzip",
+  "inputs":[
+    {
+      "sbg:category": "Basic",
+      "type": [
+        "File"
+      ],
+      "description": "VCF file to be normalized and compressed.",
+      "label": "input VCF file",
+      "id": "#vcf",
+      "sbg:fileTypes": "vcf",
+      "required" : true,
+      "inputBinding": {
+        "separate": true,
+        "sbg:cmdInclude": true,
+        "position": 0,
+        "prefix": ""
+      }
+    },
+    {
+      "sbg:category": "Basic",
+      "type": [
+        "File"
+      ],
+      "description": "Genome reference in FASTA format",
+      "label": "reference FASTA file",
+      "id": "#ref_vt",
+      "sbg:fileTypes": "FASTA",
+      "required" : true,
+      "inputBinding": {
+        "separate": true,
+        "sbg:cmdInclude": true,
+        "position": 1,
+        "prefix": "| /vt/vt decompose_blocksub -a - | /vt/vt normalize -r ",
+        "secondaryFiles" : ".fai"
+      }
+    },
+    {
+      "sbg:category": "Basic",
+      "type": [
+        "string"
+      ],
+      "description": "Name of the compressed VCF output.",
+      "label": "output compressed VCF file name",
+      "id": "#output_gz_name",
+      "required" : false,
+      "inputBinding": {
+        "separate": true,
+        "cmdInclude": true,
+        "position": 2,
+        "prefix": "-q - | /vt/vt uniq - | bgzip -c > ",
+        "valueFrom" : {
+          "class": "Expression",
+          "script": " $job.inputs.vcf.name + '.gz' ",
+          "engine": "#cwl-js-engine"
+        }
+      }
+    }
+  ],
+  "outputs":[
+    {
+      "id": "#output_gz",
+      "type": [
+        "File"
+      ],
+      "description" : "Output normalized and compressed VCF file.",
+      "sbg:fileTypes": "gz",
+      "outputBinding": {
+        "glob": {
+          "class": "Expression",
+          "script": "$job.inputs.vcf.name + '.gz'",
+          "engine": "#cwl-js-engine"
+        }
+      }
+    }
+  ]
+}
