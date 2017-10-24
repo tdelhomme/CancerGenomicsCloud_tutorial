@@ -51,7 +51,7 @@ R api could be use to analyse several task features, such as:
   * task execution time (queue + run)
   * task price (computing + storage)
 
-[This script](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/task_monitoring.r) is an example of task analysis, which produce [this sort of picture](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/images/tasks.png).
+[This script](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/task_monitoring.r) is an example of task analysis, which produce [this sort of picture](https://github.com/tdelhomme/CancerGenomicsCloud_tutorial/blob/master/images/tasks.png).
 
 ### 1.6 Issues (API is currently in development)
 
