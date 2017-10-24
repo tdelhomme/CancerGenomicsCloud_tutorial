@@ -45,7 +45,15 @@ Steps are the following:
     * 3. add the workflow to your project (these 2 previous steps can be skipped if your app is already present in the project)
     * 4. loop over the BAM file to run the variant calling on each sample
 
-### 1.5 Issues (API is currently in development)
+### 1.5 Task monitoring
+
+R api could be use to analyse several task features, such as:
+  * task execution time (queue + run)
+  * task price (computing + storage)
+
+[This script](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/task_monitoring.r) is an example of task analysis.
+
+### 1.6 Issues (API is currently in development)
 
 - [query is limited to the 100 first files](https://github.com/sbg/sevenbridges-r/issues/60)
 - If upload a JSON file in the GUI, can not run a task using this app in R
