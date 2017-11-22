@@ -97,3 +97,10 @@ foreach(i = 1:length(all_results_vcf)) %dopar% system(paste("scp ", result_folde
                                                             result_folder,"/", sep=""))
 date()
 stopCluster(cl)
+
+
+
+### 6. DELETE VCF FILES ON THE CGC ###
+
+all_vcf = p$file("vcf.gz", complete = TRUE); length(all_vcf)
+delete(all_vcf)
