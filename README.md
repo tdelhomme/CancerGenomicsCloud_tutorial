@@ -46,6 +46,7 @@ Steps are the following:
     * 4. loop over the BAM file to run the variant calling on each sample 
     * 5. download locally each VCF file
     * 6. transfer each VCF from local computer to the IARC HPC
+    * 7. delete VCf files on the CGC (don't forget the checking of VCF files downloading before this)
 
 
 ### 1.5 Task monitoring
