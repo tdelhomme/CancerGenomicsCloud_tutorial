@@ -45,7 +45,7 @@ Steps are the following:
     * 3. add the workflow to your project (these 2 previous steps can be skipped if your app is already present in the project)
     * 4. loop over the BAM file to run the variant calling on each sample 
     * 5. download locally each VCF file
-    * 6. transfer each VCF from local computer to IARC HPC
+    * 6. transfer each VCF from local computer to the IARC HPC
 
 
 ### 1.5 Task monitoring
