@@ -60,13 +60,20 @@ registerDoParallel(cl)
 output_folder = paste("~/Documents/Analysis/TCGA/CancerGenomicsCloud/results/", project, "_platypus_", Sys.Date(), sep="")
 dir.create(output_folder)
 
-all_vcf = p$file("vcf.gz", complete = TRUE); length(all_vcf)
-
-date()
-foreach(i = 1:length(all_vcf)) %dopar% all_vcf[[i]]$download(output_folder) 
-date()
-stopCluster(cl)
-
+# scheduling
+while(TRUE){
+  all_vcf = p$file("vcf.gz", complete = TRUE)
+  print(length(all_vcf))
+  if(length(all_vcf) == length(all_bam)){
+    date()
+    foreach(i = 1:length(all_vcf)) %dopar% all_vcf[[i]]$download(output_folder) 
+    date()
+    stopCluster(cl)
+    break
+  }
+  print("SLEEPING...")
+  Sys.sleep(120)
+}
 
 ### 5. VERIFY THERE WAS NO ISSUES WITH THE DOWNLOADING ###
 # I could have a problem with AWS machine, which leads to an output vcf.gz containing HTML code (the error).
