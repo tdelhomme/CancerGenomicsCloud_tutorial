@@ -90,22 +90,10 @@ sum(sizes<100000)
 
 ### 5. COPYING FILES TO THE CLUSTER ###
 setwd("~/Documents/Analysis/TCGA/CancerGenomicsCloud/results/")
-i=2
-result_folder = list.files(".")[i]
-  
-all_results_vcf = list.files(result_folder) ; length(all_results_vcf)
+result_folder = list.files(".")[which(grepl(project,list.files(".") ))]
 
-cl<-makeCluster(8)
-registerDoParallel(cl)
-
-date()
-foreach(i = 1:length(all_results_vcf)) %dopar% system(paste("scp ", result_folder, "/", all_results_vcf[i], " ",
-                                                            "delhommet@10.10.156.1:/data/delhommet/TCGA/CancerGenomicsCloud/results/",
-                                                            result_folder,"/", sep=""))
-date()
-stopCluster(cl)
-
-
+system(paste("scp -rp ", result_folder, "/", " " , 
+             "delhommet@10.10.156.1:/data/delhommet/TCGA/CancerGenomicsCloud/results/", sep=""))
 
 ### 6. DELETE VCF FILES ON THE CGC ###
 
