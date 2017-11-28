@@ -34,18 +34,23 @@ platypus_bgzip_workflow = link(platypus, bgzip, "#output_vcf", "#vcf", #replace 
 
 p$app_add("platypus_bgzip", platypus_bgzip_workflow) 
 
-start=1
-for( i in start:length(all_bam) ){
-  bamfile = all_bam[[i]]
-  taskName <- paste("platypus_bgzip", bamfile$name, gsub("  | ", "-", date()), sep="_")
-  tsk = p$task_add(name = taskName,
-                   description = paste("platypus bgzip on sample:", bamfile$name, sep=""),
-                   app = paste("tdelhomme/", project, "/platypus_bgzip", sep=""),
-                   inputs = list(bamfile = bamfile,
-                                 ref = fasta_input,
-                                 output_vcf_name = gsub(".bam", "_platypus.vcf", bamfile$name),
-                                 output_gz_name = paste(gsub(".bam", "_platypus.vcf", bamfile$name), ".gz", sep="")))
-  tsk$run()
+splits = split(1:length(all_bam), ceiling(seq_along(1:length(all_bam))/100))
+
+for( j in 1:length(splits)){
+  for( i in splits[j][[1]] ){
+    bamfile = all_bam[[i]]
+    taskName <- paste("platypus_bgzip", bamfile$name, gsub("  | ", "-", date()), sep="_")
+    tsk = p$task_add(name = taskName,
+                     description = paste("platypus bgzip on sample:", bamfile$name, sep=""),
+                     app = paste("tdelhomme/", project, "/platypus_bgzip", sep=""),
+                     inputs = list(bamfile = bamfile,
+                                   ref = fasta_input,
+                                   output_vcf_name = gsub(".bam", "_platypus.vcf", bamfile$name),
+                                   output_gz_name = paste(gsub(".bam", "_platypus.vcf", bamfile$name), ".gz", sep="")))
+    tsk$run()
+  }
+  print("SLEEPING...")
+  Sys.sleep(240)
 }
 
 
