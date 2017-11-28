@@ -2,7 +2,18 @@
 
 library("sevenbridges")
 
-project = "tcga-kirc-germline"
+all_projects = c("tcga-kirc-germline", "tcga-kirp-germline", "tcga-luad-germline", 
+                 "tcga-lusc-germline", "tcga-brca-germline", "tcga-gbm-germline", "tcga-ov-germline", 
+                 "tcga-ucec", "tcga-hnsc-germline", "tcga-lgg-germline", "tcga-thca-germline",
+                 "tcga-prad-germline", "tcga-skcm-germline", "tcga-coad-germline", "tcga-stad-germline",
+                 "tcga-blca-germline", "tcga-lihc-germline", "tcga-cesc-germline", "tcga-sarc-germline",
+                 "tcga-paad-germline", "tcga-esca-germline", "tcga-pcpg-germline",
+                 "tcga-read-germline", "tcga-tgct-germline", "tcga-thym-germline", "tcga-acc-germline",
+                 "tcga-meso-germline", "tcga-uvm-germline", "tcga-dlbc-germline", "tcga-ucs-germline",
+                 "tcga-chol-germline", "tcga-kirc-germline")
+
+for(i in 20:32) {
+project = all_projects[i]
 
 ### 1. PREPARE THE PROJECT (ADD REF, VERIFY UNIQUE FILES, ...)
 
@@ -54,18 +65,16 @@ for( j in 1:length(splits)){
 }
 
 
-
 ### 3. DOWNLOADING RESULTING VARIANT CALLING VCF ###
 library(foreach)
 library(doParallel)
 
-cl<-makeCluster(8)
+cl<-makeCluster(4)
 registerDoParallel(cl)
 
 output_folder = paste("~/Documents/Analysis/TCGA/CancerGenomicsCloud/results/", project, "_platypus_", Sys.Date(), sep="")
 dir.create(output_folder)
 
-# scheduling
 while(TRUE){
   all_vcf = p$file("vcf.gz", complete = TRUE)
   print(length(all_vcf))
@@ -77,8 +86,9 @@ while(TRUE){
     break
   }
   print("SLEEPING...")
-  Sys.sleep(120)
+  Sys.sleep(600)
 }
+
 
 ### 5. VERIFY THERE WAS NO ISSUES WITH THE DOWNLOADING ###
 # I could have a problem with AWS machine, which leads to an output vcf.gz containing HTML code (the error).
@@ -91,16 +101,24 @@ all_results_vcf = list.files(output_folder)
 
 setwd(output_folder)
 sizes = file.size(dir())
-sum(sizes<100000)
+
+if(sum(sizes<100000)==0) {
 
 ### 5. COPYING FILES TO THE CLUSTER ###
 setwd("~/Documents/Analysis/TCGA/CancerGenomicsCloud/results/")
 result_folder = list.files(".")[which(grepl(project,list.files(".") ))]
 
 system(paste("scp -rp ", result_folder, "/", " " , 
-             "delhommet@10.10.156.1:/data/delhommet/TCGA/CancerGenomicsCloud/results/", sep=""))
+             "delhommet@10.10.156.1:/data/delhommet/TCGA/CancerGenomicsCloud/results/VCF/", sep=""))
 
-### 6. DELETE VCF FILES ON THE CGC ###
+### 6. REMOVE FILES FROM CGC ###
 
-all_vcf = p$file("vcf.gz", complete = TRUE); length(all_vcf)
 delete(all_vcf)
+
+} else { cat(project, file="~/Documents/Analysis/TCGA/CancerGenomicsCloud/results/FAILED_PROJECTS.txt", append=T, sep="\n") }  
+
+}
+
+
+
+
