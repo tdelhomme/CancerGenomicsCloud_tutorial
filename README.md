@@ -2,6 +2,8 @@
 
 ## Sevenbridges cancer genomics cloud tutorial
 
+There is a [complete tutorial](https://www.bioconductor.org/help/course-materials/2016/BioC2016/ConcurrentWorkshops4/Yin/bioc-workflow.html) on using R for the Sevenbridges Cancer Genomics Cloud, by Tengfei Yin.
+
 ### 1. R api to analyse TCGA data on the Cancer Genomics Cloud
 
 ### 1.1 Introduction
