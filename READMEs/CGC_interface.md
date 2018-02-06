@@ -36,6 +36,17 @@ Outputs: this is what we want to rescue from AWS instance. We have one output, w
 
 Note: we can add input port for output file name, but also for input parameters, defined with a prefix and a value ask when run the tool.  
 
-### 3. Run a task on a unique files
+### 3. Run a task on a file(s)
+
+Two different tabs must be fill in by user when running a task:
+
+#### Set input data
+Here the user choose if use _batching_ or not. If _batching_ is chosen, user can batch by _nothing_, _file_ (used in mosy cases) or _metadata_.  
+Then user select the input file(s) for each required input (defined with its _label_).  
+Then he must set a value for each parameters (_e.g._ output file name, or prefixed parameters).
+
+#### Define app settings
+All input values must be define by user when running a task.  
+Each parameter expected by the app must have a value that user enter in the corresponding gap.
 
 ### 4. Run a task on a batch of files
