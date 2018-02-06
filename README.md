@@ -33,8 +33,8 @@ A good schema for using R api to analyse TCGA data is the following:
 
 #### Platypus / bgzip Workflow
 
- - [R API code and running example](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/platypus_bgzip_workflow.r)
- - [JSON file to describe platypus tool](https://github.com/tdelhomme/CancerGenomicsCloud/blob/master/code/platypus.json)
+ - [JSON file to describe bgzip tool](https://github.com/tdelhomme/CancerGenomicsCloud_tutorial/blob/master/code/bgzip.json)
+ - [JSON file to describe platypus tool](https://github.com/tdelhomme/CancerGenomicsCloud_tutorial/blob/master/code/platypus.json)
 
 ### 1.3 Data queries
 
