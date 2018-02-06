@@ -4,6 +4,10 @@
 
 There is a [complete tutorial](https://www.bioconductor.org/help/course-materials/2016/BioC2016/ConcurrentWorkshops4/Yin/bioc-workflow.html) on using R for the Sevenbridges Cancer Genomics Cloud, by Tengfei Yin.
 
+I have also wrote two additional READMEs, to support the pratical and theoretical course I give in IARC in feb. 2017:  
+* [using Cancer Genomics Cloud interface to run our first analysis](https://github.com/tdelhomme/CancerGenomicsCloud_tutorial/blob/master/READMEs/CGC_interface.md)
+* [using R and CWL to run reproducible analyses](https://github.com/tdelhomme/CancerGenomicsCloud_tutorial/blob/master/READMEs/CGC_R_API_CWL.md)
+
 ### 1. R api to analyse TCGA data on the Cancer Genomics Cloud
 
 ### 1.1 Introduction
@@ -45,7 +49,7 @@ Steps are the following:
     * 1. load platypus and bgzip JSON tools
     * 2. connect them into a workflow
     * 3. add the workflow to your project (these 2 previous steps can be skipped if your app is already present in the project)
-    * 4. loop over the BAM file to run the variant calling on each sample 
+    * 4. loop over the BAM file to run the variant calling on each sample
     * 5. download locally each VCF file
     * 6. transfer each VCF from local computer to the IARC HPC
     * 7. delete VCF files on the CGC (don't forget the checking of VCF files downloading before this)
