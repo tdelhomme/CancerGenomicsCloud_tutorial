@@ -48,5 +48,3 @@ Then he must set a value for each parameters (_e.g._ output file name, or prefix
 #### Define app settings
 All input values must be define by user when running a task.  
 Each parameter expected by the app must have a value that user enter in the corresponding gap.
-
-### 4. Run a task on a batch of files
