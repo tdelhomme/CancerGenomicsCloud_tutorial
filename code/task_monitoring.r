@@ -28,28 +28,34 @@ all_prices_computation = unlist(lapply(1:length(all_tasks), function(i){
 }))
 names(all_prices_computation) = c(1:length(all_prices_computation))
 
-par(mfrow=c(1,2))
-plot(sort(all_prices), type = "l", col="darkgrey", lwd=3, xlab="task index", ylab="price ($)",
-     main=paste(project, "  (n=", length(all_prices), ")", sep=""), ylim=c(0,max(all_prices)))
-lines(all_prices_computation[names(sort(all_prices))], col="blueviolet")
-lines(all_prices_storage[names(sort(all_prices))], col="dodgerblue3")
-text(x=length(all_prices)/8, y=max(all_prices)-0.1*max(all_prices), paste("median = ", median(all_prices)))
-text(x=length(all_prices)/8, y=max(all_prices)-0.15*max(all_prices), paste("min = ", min(all_prices)))
-text(x=length(all_prices)/8, y=max(all_prices)-0.2*max(all_prices), paste("max = ", max(all_prices)))
-text(x=length(all_prices)/8, y=max(all_prices)-0.25*max(all_prices), paste("total = ", sum(all_prices)))
-legend(x=length(all_prices)/4, y=max(all_prices)-0.05*max(all_prices), col=c("darkgrey", "blueviolet", "dodgerblue3"),
-       legend=c("total", "computing", "storage"), bty='n', lty=1, lwd=2, y.intersp = 0.6)
+all_durations = sapply( task_list, function(x) c(x$execution_status$queued_duration, x$execution_status$running_duration , x$execution_status$execution_duration,  
+                                                 x$execution_status$duration))/1000/60
 
-# durations = unlist(lapply(1:length(all_tasks), function(i){
-#   tsk = all_tasks[[i]]
-#   date = tsk$start_time
-#   pos = as.numeric(gregexpr(":", date)[[1]])
-#   start = c(as.numeric(substr(date, pos[1]-2, pos[1]-1)), as.numeric(substr(date, pos[1]+1, pos[1]+2)), as.numeric(substr(date, pos[2]+1, pos[2]+2)))
-#   date = tsk$end_time
-#   pos = as.numeric(gregexpr(":", date)[[1]])
-#   end = c(as.numeric(substr(date, pos[1]-2, pos[1]-1)), as.numeric(substr(date, pos[1]+1, pos[1]+2)), as.numeric(substr(date, pos[2]+1, pos[2]+2)))
-#   ((end[1]*3600 + end[2]*60 + end[3]) - (start[1]*3600 + start[2]*60 + start[3])) / 60
-# }))
+ntest = 106-86 #to separate test and production runs; to change depending on your values
+nprod = 86
+
+svg("Price_duration.svg",h=5,w=5*2)
+par(mfrow=c(1,2),family="Times",las=1)
+plot(-1,-1, type = "l", col="darkgrey", lwd=3, xlab="Task index", ylab="Price ($)", main=paste(project, "  (n=", length(all_prices[((ntest+nprod)-85):(ntest+nprod)]), ")", sep=""), ylim=c(0,max(all_prices)),xlim=c(1,nprod))
+polygon(c(1,1:nprod,nprod:1,1),c(0,(all_prices)[names(sort(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)]))],rep(0,nprod),0), col=rgb(0.1,0.3,0.5,0.7),border = NA)
+polygon(c(1,1:nprod,nprod:1,1),c(0,all_prices_storage[names(sort(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)]))],rep(0,nprod),0), col=rgb(0.3,0.3,0.5,0.7),border = NA)
+text(x=1, y=max(all_prices)*0.95, paste("median = $", median(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)])),adj = 0)
+text(x=1, y=max(all_prices)*0.9, paste("min = $", min(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)])),adj = 0)
+text(x=1, y=max(all_prices)*0.85, paste("max = $", max(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)])),adj = 0)
+text(x=1, y=max(all_prices)*0.80, paste("total = $", sum(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)])),adj = 0)
+text(x=1, y=max(all_prices)*0.75, paste("test = $", sum(all_prices[1:((ntest+nprod)-(nprod-1)-1)])),adj = 0)
+legend(x=length(all_prices)/3, y=max(all_prices), fill=c(rgb(0.1,0.3,0.5,0.7), rgb(0.3,0.3,0.5,0.7)),legend=c("computing", "storage"), bty='n', y.intersp = 0.8)
+
+ord_dur = order(all_durations[4,((ntest+nprod)-(nprod-1)):(ntest+nprod)])
+plot(-1,-1, type = "l", col="darkgrey", lwd=3, xlab="Task index", ylab="Duration (min)", main="", ylim=c(0,max(all_durations)),xlim=c(1,nprod))
+polygon(c(1,1:nprod,nprod:1,1),c(0,(all_durations[4,((ntest+nprod)-(nprod-1)):(ntest+nprod)])[ord_dur],rep(0,nprod),0), col=rgb(0.1,0.3,0.5,0.7),border = NA)
+polygon(c(1,1:nprod,nprod:1,1),c(0,all_durations[1,((ntest+nprod)-(nprod-1)):(ntest+nprod)][ord_dur],rep(0,nprod),0), col=rgb(0.3,0.3,0.5,0.7),border = NA)
+polygon(c(1,1:nprod,nprod:1,1),c(0,colSums(all_durations[c(1,3),((ntest+nprod)-(nprod-1)):(ntest+nprod)][,ord_dur]),rep(0,nprod),0), col=rgb(0.3,0.3,0.5,0.7),border = NA)
+text(x=1, y=max(all_durations)*0.95, paste("median = ", format(median(all_durations[4,((ntest+nprod)-(nprod-1)):(ntest+nprod)]),digits = 2),"min"),adj = 0)
+text(x=1, y=max(all_durations)*0.9, paste("min = ", format(min(all_durations[4,((ntest+nprod)-(nprod-1)):(ntest+nprod)]),digits = 2),"min"),adj = 0)
+text(x=1, y=max(all_durations)*0.85, paste("max = ", format(max(all_durations[4,((ntest+nprod)-(nprod-1)):(ntest+nprod)]),digits = 2),"min"),adj = 0)
+legend(x=ncol(all_durations)/3, y=max(all_durations), fill=c(rgb(0.1,0.3,0.5,0.7), rgb(0.3,0.3,0.5,0.7)),legend=c("initialization","execution"), bty='n', y.intersp = 0.8)
+dev.off()
 
 running = unlist(lapply(1:length(all_tasks), function(i){
   tsk = all_tasks[[i]]
