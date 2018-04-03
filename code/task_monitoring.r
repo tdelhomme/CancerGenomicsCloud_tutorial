@@ -1,7 +1,9 @@
 library("sevenbridges")
 
+# set the project name (get it from url on the CGC)
 project = "tcga-kirc-germline"
 
+# create authentification and project objects (get the token on the developer part on the CGC)
 a <- Auth(token = "", url = "https://cgc-api.sbgenomics.com/v2/")
 p <- a$project(id = paste("tdelhomme/", project, sep=""))
 
