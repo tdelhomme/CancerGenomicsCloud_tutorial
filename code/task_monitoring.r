@@ -34,7 +34,7 @@ all_prices_computation = unlist(lapply(1:length(all_tasks), function(i){
 }))
 names(all_prices_computation) = c(1:length(all_prices_computation))
 
-all_durations = sapply( task_list, function(x) c(x$execution_status$queued_duration, x$execution_status$running_duration , x$execution_status$execution_duration,  
+all_durations = sapply(all_tasks, function(x) c(x$execution_status$queued_duration, x$execution_status$running_duration , x$execution_status$execution_duration,  
                                                  x$execution_status$duration))/1000/60
 
 ntest = 106-86 #to separate test and production runs; to change depending on your values
