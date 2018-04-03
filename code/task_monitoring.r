@@ -42,7 +42,7 @@ nprod = 86
 
 svg("Price_duration.svg",h=5,w=5*2)
 par(mfrow=c(1,2),family="Times",las=1)
-plot(-1,-1, type = "l", col="darkgrey", lwd=3, xlab="Task index", ylab="Price ($)", main=paste(project, "  (n=", length(all_prices[((ntest+nprod)-85):(ntest+nprod)]), ")", sep=""), ylim=c(0,max(all_prices)),xlim=c(1,nprod))
+plot(-1,-1, type = "l", col="darkgrey", lwd=3, xlab="Task index", ylab="Price ($)", main=paste(project, "  (n=", length(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)]), ")", sep=""), ylim=c(0,max(all_prices)),xlim=c(1,nprod))
 polygon(c(1,1:nprod,nprod:1,1),c(0,(all_prices)[names(sort(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)]))],rep(0,nprod),0), col=rgb(0.1,0.3,0.5,0.7),border = NA)
 polygon(c(1,1:nprod,nprod:1,1),c(0,all_prices_storage[names(sort(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)]))],rep(0,nprod),0), col=rgb(0.3,0.3,0.5,0.7),border = NA)
 text(x=1, y=max(all_prices)*0.95, paste("median = $", median(all_prices[((ntest+nprod)-(nprod-1)):(ntest+nprod)])),adj = 0)
