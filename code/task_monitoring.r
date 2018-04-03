@@ -9,20 +9,24 @@ p <- a$project(id = paste("tdelhomme/", project, sep=""))
 
 all_tasks = p$task(complete = T)
 
+# here we need to update the task to retrieve all the informations
 for (i in 1:length(all_tasks)){
   all_tasks[[i]]$update()
 }
 
+# create a vector of the total prices of each tasks
 all_prices = unlist(lapply(1:length(all_tasks), function(i){
   as.numeric(all_tasks[[i]]$price$amount)
 }))
 names(all_prices) = c(1:length(all_prices))
 
+# create a vector of the prices of storage of each tasks
 all_prices_storage = unlist(lapply(1:length(all_tasks), function(i){
   as.numeric(all_tasks[[i]]$price$breakdown$storage)
 }))
 names(all_prices_storage) = c(1:length(all_prices_storage))
 
+# create a vector of the prices of computing of each tasks
 all_prices_computation = unlist(lapply(1:length(all_tasks), function(i){
   as.numeric(all_tasks[[i]]$price$breakdown$computation)
 }))
